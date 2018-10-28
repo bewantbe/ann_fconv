@@ -1,0 +1,17 @@
+*~
+.*.swp
+\#*\#
+tags
+*.o
+*.d
+*.layout
+*.mex
+*.mexa64
+.cccc/
+.ycm_extra_conf.py
+.ycm_extra_conf.pyc
+gmon.out
+perf.data
+perf.data.old
+pic_tmp
+__pycache__/
