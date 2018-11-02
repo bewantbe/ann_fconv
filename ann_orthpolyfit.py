@@ -1,19 +1,18 @@
 #
 
 exec(open('common_imports.py').read())
-exec(open('/home/xyy/Documents/research/poly-orth/ex/weighted_orthpoly_solver.py').read())
+from utils.weighted_orthpoly_solver import orthpoly_coef
+import numpy.polynomial.chebyshev  as cheb
+import numpy.polynomial.legendre   as lege
 
-x_sample = np.linspace(-1, 1, 100)
-fun = lambda x: (x+0.8) * np.arcsin(np.sin(2*x*x+5*x))
-ans_xy = get_training_set(100, fun, x_sample)
-
+# For getting orthogonal polynomial coefficients.
 n_poly_order = 100
 V = orthpoly_coef(None, 'legendre', n_poly_order)
 #x_sample = sin( pi * (-n_poly_order/2 + arange(n_poly_order+1))/(n_poly_order+1) )
 x_sample = lege.legroots(1*(arange(n_poly_order+2)==n_poly_order+1))
 get_fq_coef = lambda f: np.linalg.solve(V, f(x_sample))
 #get_fq_coef = lambda f: orthpoly_coef(f, 'legendre', n_poly_order)
-#get_fq_coef = lambda f: chb.Chebyshev.interpolate(f, n_poly_order).coef
+#get_fq_coef = lambda f: cheb.Chebyshev.interpolate(f, n_poly_order).coef
 
 #
 act_fun = 'tanh'
@@ -78,6 +77,7 @@ wb_end = adam(lambda pm, k: cost_g(pm), flat_wb, callback=gd_callback,
 #wb_end = adam(lambda pm, k: cost_g(pm), flat_wb, callback=gd_callback,
 #              num_iters=n_iter, step_size=step_size, b1=0.9, b2=0.99)
 
+# Plot eigen value of Hess.
 h = cost_h(wb_end)  # 105 sec for layer_dims = [1, 2000, 1]
 eigval, eigvec = np.linalg.eigh(h)
 
@@ -85,6 +85,7 @@ figure(342); clf()
 plot(log10(abs(eigval)))
 
 if 0:
+    # Save parameters
     fpath = 'pm_set/fit_1M3'
     np.savez_compressed(fpath,
         ans_xy    = ans_xy,
@@ -97,7 +98,7 @@ if 0:
     )
 
 if 0:
-    # Load track path data
+    # Load parameters
     fprefix = 'pm_set/'
     fname = 'fit_1M3.npz'
     with np.load(fprefix+fname) as data:
